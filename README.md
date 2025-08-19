@@ -6,34 +6,41 @@
 
 This project presents a conceptual idea for a new computer architecture where memory and CPU are designed to natively understand and manage pointers and references. The goal is to address one of the most persistent sources of bugs in software development: unsafe or invalid memory access due to poor pointer management.
 
-## 🔍 Key Concepts
 
-- **Split Memory Model**: Memory is divided into two distinct regions:
-  - **Value Memory**: Stores owned data and values.
-  - **Reference Memory**: Stores references and pointers, along with metadata such as reference counts and validity flags.
+## Core Concept
 
-- **Pointer-Aware CPU**: The processor includes native instructions to:
-  - Track reference counts.
-  - Detect and destroy objects when no references remain.
-  - Prevent use-after-free and null dereference errors.
-  - Optionally detect reference cycles.
+- **Variables are pure data in RAM**: They do not exist directly in the program memory space.
+- **All access goes through references (pointers)**: Each reference contains:
+  - A **physical memory address**
+  - A **reference count** (refcount)
+  - Optional **access hash** for security
+- **Automatic destruction**: When `refcount == 0`, the hardware immediately frees the associated memory.
+- **Security via hash verification**: Every read/write access requires a valid hash provided by the OS, ensuring that only authorized programs can access a reference.
 
-## ✅ Benefits
+## Advantages
 
-- **Increased Stability**: Programs become more robust by eliminating common pointer-related bugs.
-- **Enhanced Security**: Memory safety is enforced at the hardware level.
-- **Future-Proofing**: Opens the door to simpler, safer programming languages and systems.
-- **Better Developer Experience**: Reduces the need for complex memory management logic in software.
+- **Automatic memory management**: No manual `free()`, no garbage collection pauses.
+- **Safe references**: `use-after-free` and invalid dereferences are impossible.
+- **Controlled inter-program access**: Hashes manage which programs can access shared references.
+- **Predictable performance**: Hardware-managed reference counting avoids runtime GC pauses.
+- **Reduced memory overhead**: Refcounted memory is freed as soon as it's no longer referenced.
 
-## 🚀 Use Cases
+## Challenges
 
-- Systems programming (OS kernels, drivers)
-- Game engines and real-time applications
-- Embedded and safety-critical systems
-- High-performance computing without garbage collectors
+- **Reference cycles**: Cyclic references cannot be freed automatically with pure refcounting; a cycle detector may be needed.
+- **Hardware complexity**: CPU must handle refcount and hash verification efficiently.
+- **OS dependency**: Security relies on the OS correctly managing hash distribution and access permissions.
+
+## Usage Concept
+
+# Conceptual flow
+Program A requests a variable -> OS provides reference + hash
+Program A manipulates reference -> refcount automatically updated
+Reference goes out of scope -> refcount decreases
+Refcount reaches 0 -> hardware frees memory
+Program B attempts access -> hash verification fails if not authorized
 
 ## ⚠️ Disclaimer
-
 This is a conceptual idea imagined by the user. The user does **not** plan to develop this project themselves. This repository is intended to share the vision and invite **experienced developers, researchers, and hardware architects** to explore and experiment with the concept.
 
 ## 📬 Get Involved
