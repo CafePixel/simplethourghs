@@ -32,15 +32,15 @@ The memory safety model spans the full system stack:
 
 ## Core Concept
 
-- **Variables are pure data in RAM**: Programs never hold raw variables, only references.  
-- **References include**:  
-  - Physical memory address  
-  - Reference count (refcount)  
-  - Optional access hash for security  
-- **Automatic destruction**: Memory is freed automatically when refcount drops to 0.  
-- **Hash-based access control**: Reads/writes require a valid hash issued by the OS, ensuring that only authorized programs can access the memory.
-- Reference counting is applied universally to all memory, ensuring safety and preventing accidental corruption, while hashes and access permissions are reserved for critical data where security is essential
-
+- **Variables live only in RAM**: Programs never manipulate raw addresses, only hardware-managed references.  
+- **References are lightweight handles** managed by the CPU, which internally tracks:  
+  - The physical memory address  
+  - A reference count (updated only on creation/destruction of a reference)  
+  - Optional integrity hash and access permissions  
+- **Automatic memory management**: When the last reference to a variable is destroyed, the memory is freed automatically.  
+- **Optional security**: Hashes and permissions can be enabled for critical data, ensuring that only authorized programs can read/write.  
+- **Performance flexibility**: References can be created with or without hash checks, allowing trade-offs between speed and safety depending on the use case.
+- 
 ---
 
 ## Advantages
