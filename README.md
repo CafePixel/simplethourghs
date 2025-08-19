@@ -58,8 +58,9 @@ Program A requests a variable -> OS issues reference + hash
 Program A uses reference -> hardware updates refcount automatically  
 Reference goes out of scope -> refcount decreases  
 Refcount reaches 0 -> hardware frees memory  
-Program B attempts access -> hardware verifies hash; access denied if invalid## ⚠️ Disclaimer  
+Program B attempts access -> hardware verifies hash; access denied if invalid
 
+## ⚠️ Disclaimer  
 This is a conceptual idea imagined by the user. The user does **not** plan to develop this project themselves. This repository is intended to share the vision and invite **experienced developers, researchers, and hardware architects** to explore and experiment with the concept.
 
 ## 📬 Get Involved
