@@ -68,6 +68,6 @@ If you're interested in exploring this idea further, feel free to:
 - Share your thoughts and improvements
 - Prototype the concept in software or hardware simulation
 
-This idea was born out of frustration with a bug in Godot. 
+This idea was born out Godot, when need adding features and must learn new langages and make another game engine. 
 
 
