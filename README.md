@@ -65,6 +65,8 @@ The BIOS can enforce a maximum number of simultaneous references per variable or
 
 Combined with reference counting, this allows precise tracking of how many programs are accessing a critical variable at any time.
 
+Can have flags for only read or write/read. 
+
 💡 The goal is to make memory access safer and more complex than traditional systems, while keeping flexibility for less sensitive variables.
 
 ## Conceptual Flow#
