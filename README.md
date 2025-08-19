@@ -7,40 +7,57 @@
 This project presents a conceptual idea for a new computer architecture where memory and CPU are designed to natively understand and manage pointers and references. The goal is to address one of the most persistent sources of bugs in software development: unsafe or invalid memory access due to poor pointer management.
 
 
+## Architecture Overview
+
+The memory safety model spans the full system stack:
+
+1. **Hardware**  
+   - Manages reference counts for all variables.
+   - Checks access hashes on every read/write.
+   - Automatically frees memory when `refcount == 0`.
+
+2. **BIOS / Firmware**  
+   - Initializes the hardware reference system.
+   - Sets up global permissions and prepares reference hashes for authorized programs.
+
+3. **Operating System**  
+   - Distributes access hashes to programs according to policy.
+   - Ensures isolation between programs without performing per-access checks (hardware handles that).
+
+4. **Applications / Software**  
+   - Manipulate references securely.
+   - No direct memory management needed; unsafe pointer operations are impossible.
+
+---
+
 ## Core Concept
 
-- **Variables are pure data in RAM**: They do not exist directly in the program memory space.
-- **All access goes through references (pointers)**: Each reference contains:
-  - A **physical memory address**
-  - A **reference count** (refcount)
-  - Optional **access hash** for security
-- **Automatic destruction**: When `refcount == 0`, the hardware immediately frees the associated memory.
-- **Security via hash verification**: Every read/write access requires a valid hash provided by the OS, ensuring that only authorized programs can access a reference.
+- **Variables are pure data in RAM**: Programs never hold raw variables, only references.  
+- **References include**:  
+  - Physical memory address  
+  - Reference count (refcount)  
+  - Optional access hash for security  
+- **Automatic destruction**: Memory is freed automatically when refcount drops to 0.  
+- **Hash-based access control**: Reads/writes require a valid hash issued by the OS, ensuring that only authorized programs can access the memory.
+
+---
 
 ## Advantages
 
-- **Automatic memory management**: No manual `free()`, no garbage collection pauses.
-- **Safe references**: `use-after-free` and invalid dereferences are impossible.
-- **Controlled inter-program access**: Hashes manage which programs can access shared references.
-- **Predictable performance**: Hardware-managed reference counting avoids runtime GC pauses.
-- **Reduced memory overhead**: Refcounted memory is freed as soon as it's no longer referenced.
+- **Memory safety by design**: Prevents `use-after-free`, null dereference, and memory corruption.  
+- **Predictable performance**: No runtime garbage collection pauses; hardware handles reference counting.  
+- **Controlled inter-program access**: Only programs with valid hashes can share references.  
+- **Reduced developer burden**: No manual memory management; safer code by default.
 
-## Challenges
+---
 
-- **Reference cycles**: Cyclic references cannot be freed automatically with pure refcounting; a cycle detector may be needed.
-- **Hardware complexity**: CPU must handle refcount and hash verification efficiently.
-- **OS dependency**: Security relies on the OS correctly managing hash distribution and access permissions.
+## Conceptual Flow#
 
-## Usage Concept
-
-# Conceptual flow
-Program A requests a variable -> OS provides reference + hash
-Program A manipulates reference -> refcount automatically updated
+Program A requests a variable -> OS issues reference + hash
+Program A uses reference -> hardware updates refcount automatically
 Reference goes out of scope -> refcount decreases
 Refcount reaches 0 -> hardware frees memory
-Program B attempts access -> hash verification fails if not authorized
-
-## ⚠️ Disclaimer
+Program B attempts access -> hardware verifies hash; access denied if invalid## ⚠️ Disclaimer
 This is a conceptual idea imagined by the user. The user does **not** plan to develop this project themselves. This repository is intended to share the vision and invite **experienced developers, researchers, and hardware architects** to explore and experiment with the concept.
 
 ## 📬 Get Involved
