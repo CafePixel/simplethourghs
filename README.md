@@ -51,6 +51,21 @@ The memory safety model spans the full system stack:
 - **Reduced developer burden**: No manual memory management; safer code by default.
 
 ---
+🔐 Enhanced Memory Security with BIOS Control and Hash (Optional)
+
+For critical variables, the system can enable a hash-based access control combined with BIOS-enforced reference limits:
+
+Each reference is assigned a unique hash provided by the OS or the authorized program.
+
+Only references with the correct hash can read or write the variable. Unauthorized access is blocked by the hardware.
+
+Access is verified at reference registration, not at every read/write, preserving performance.
+
+The BIOS can enforce a maximum number of simultaneous references per variable or per program. If the limit is reached, new reference requests are denied, even if the hash is correct.
+
+Combined with reference counting, this allows precise tracking of how many programs are accessing a critical variable at any time.
+
+💡 The goal is to make memory access safer and more complex than traditional systems, while keeping flexibility for less sensitive variables.
 
 ## Conceptual Flow#
 
