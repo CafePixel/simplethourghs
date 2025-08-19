@@ -39,6 +39,7 @@ The memory safety model spans the full system stack:
   - Optional access hash for security  
 - **Automatic destruction**: Memory is freed automatically when refcount drops to 0.  
 - **Hash-based access control**: Reads/writes require a valid hash issued by the OS, ensuring that only authorized programs can access the memory.
+- Reference counting is applied universally to all memory, ensuring safety and preventing accidental corruption, while hashes and access permissions are reserved for critical data where security is essential
 
 ---
 
